@@ -1,49 +1,171 @@
 Change Log
 ----------
 
+**1.11.3** (2026-10-28)
+
+- Fix parsing of the Belgian maximum demand (``1-0:1.6.0``) when the meter sends the value before the timestamp, e.g. ``(006.4*kW)(261023051500)`` on the Iskra IE.5 (`PR #201 <https://github.com/ndokter/dsmr_parser/pull/201>`_ by `ndokter <https://github.com/ndokter>`_)
+
+**1.11.2** (2026-08-01)
+
+- Detect closed socket connection (`PR #194 <https://github.com/ndokter/dsmr_parser/pull/194>`_ by `brambo123 <https://github.com/brambo123>`_)
+
+**1.11.1** (2026-07-09)
+
+- Set low latency to false to avoid CPU spike (`PR #189 <https://github.com/ndokter/dsmr_parser/pull/189>`_ by `jasperslits <https://github.com/jasperslits>`_)
+
+
+**1.11.0** (2026-06-28)
+
+- ``create_tcp_dsmr_reader`` is now a thin wrapper around ``create_dsmr_reader`` (using a ``socket://`` URL); both establish the exact same TCP connection. ``create_dsmr_reader`` gained a ``keep_alive_interval`` argument so the keep-alive watchdog can be used on either entry point. Default behaviour is unchanged. (`PR #186 <https://github.com/ndokter/dsmr_parser/pull/186>`_ by `balloob <https://github.com/balloob>`_)
+- The event loop is now resolved with ``asyncio.get_running_loop()`` instead of the deprecated ``asyncio.get_event_loop()``. Both readers must be called from within a running event loop unless an explicit ``loop`` is passed.
+- Opt-in: decrypt encrypted telegrams without verifying the GCM tag (`PR #185 <https://github.com/ndokter/dsmr_parser/pull/185>`_ by `balloob <https://github.com/balloob>`_)
+
+**1.10.0** (2026-06-24)
+
+- Binary framing for encrypted telegrams over the serial/network readers (`PR #184 <https://github.com/ndokter/dsmr_parser/pull/184>`_ by `balloob <https://github.com/balloob>`_)
+
+**1.9.0** (2026-06-19)
+
+- Only try to parse incoming data when checksum has arrived (`PR #187 <https://github.com/ndokter/dsmr_parser/pull/187>`_ by `puddly <https://github.com/puddly>`_)
+
+**1.8.0** (2026-06-08)
+
+- Add encrypted telegram support for MSn (Luxembourg Smarty) and SAGEMCOM_T210_D_R (`PR #178 <https://github.com/ndokter/dsmr_parser/pull/178>`_ by `Arvoreen75 <https://github.com/Arvoreen75>`_) and  `skrutzler <https://github.com/skrutzler>`_)
+
+**1.7.0** (2026-05-17)
+
+- Drop support for python 3.9
+- Migrate from pyserial/pyserial-asyncio-fast to serialx (`PR #180 <https://github.com/ndokter/dsmr_parser/pull/180>`_ by `balloob <https://github.com/balloob>`_)
+
+**1.6.0** (2026-03-04)
+
+- Drop support for python 3.8
+- Replaced pytz completely and replaced with datetime's timezone
+
+**1.5.0** (2026-02-21)
+
+- CI GitHub Actions rework/fixed (`PR #175 <https://github.com/ndokter/dsmr_parser/pull/175>`_ by `dennissiemensma <https://github.com/dennissiemensma>`_)
+- Replaced deprecated pytz with datetime's timezone (`PR #174 <https://github.com/ndokter/dsmr_parser/pull/174>`_ by `HiDiHo01 <https://github.com/HiDiHo01>`_)
+- Accept CRC values that are unpadded (missing trailing zeroes) (`PR #173 <https://github.com/ndokter/dsmr_parser/pull/173>`_ by `willemstuursma <https://github.com/willemstuursma>`_)
+
+**1.4.3** (2025-02-08)
+
+- Don't throw an error when string can't be decoded to ascii (`PR #170 <https://github.com/ndokter/dsmr_parser/pull/170>`_ by `ekaats <https://github.com/ekaats>`_)
+
+**1.4.2** (2024-07-14)
+
+- Bump Github Actions to latest versions in favor of Node deprecations (`PR #159 <https://github.com/ndokter/dsmr_parser/pull/159>`_ by `dennissiemensma <https://github.com/dennissiemensma>`_)
+- Swap pyserial-asyncio for pyserial-asyncio-fast (`PR #158 <https://github.com/ndokter/dsmr_parser/pull/158>`_ by `bdraco <https://github.com/bdraco>`_)
+
+**1.4.1** (2024-06-04)
+
+- Avoid loading timezone at runtime (`PR #157 <https://github.com/ndokter/dsmr_parser/pull/157>`_ by `elupus <https://github.com/elupus>`_)
+
+**1.4.0** (2024-03-12)
+
+- Mbus alt (`PR #142 <https://github.com/ndokter/dsmr_parser/pull/142>`_ by `dupondje <https://github.com/dupondje>`_)
+- Q3D add CURRENT_ELECTRICITY_DELIVERY (`PR #149 <https://github.com/ndokter/dsmr_parser/pull/149>`_ by `Aeroid <https://github.com/Aeroid>`_)
+- Copy head_parsers list on construct. (`PR #150 <https://github.com/ndokter/dsmr_parser/pull/150>`_ by `dupondje <https://github.com/dupondje>`_)
+
+**1.3.2** (2024-01-29)
+
+- Fix unit test for pyton 3.12 (`PR #148 <https://github.com/ndokter/dsmr_parser/pull/148>`_ by `ndokter <https://github.com/ndokter>`_)
+
+**1.3.1** (2023-11-06)
+
+- Fix parsing peak usage with invalid timestamps (`PR #143 <https://github.com/ndokter/dsmr_parser/pull/143>`_ by `dupondje <https://github.com/dupondje>`_)
+
+**1.3.0** (2023-08-01)
+
+- added E.ON Hungary; refactored DSMR specifications to fix obis reference conflicts (`PR #137 <https://github.com/ndokter/dsmr_parser/pull/137>`_ by `balazs92117 <https://github.com/balazs92117>`_)
+
+**1.2.4** (2023-07-11)
+
+- EQUIPMENT IDENTIFIER is wrong for Fluvius meters when other mbus devices are present (`PR #133 <https://github.com/ndokter/dsmr_parser/pull/133>`_ by `ejpalacios <https://github.com/ejpalacios>`_)
+
+
+**1.2.3** (2023-04-18)
+
+- Fix parsing tests and line start matching (`PR #132 <https://github.com/ndokter/dsmr_parser/pull/132>`_ by `dupondje <https://github.com/dupondje>`_)
+
+**1.2.2** (2023-04-12)
+
+- Improve performance. Thanks to `ejpalacios <https://github.com/bdraco>`_ (`PR #130 <https://github.com/ndokter/dsmr_parser/pull/130>`_ by `ndokter <https://github.com/ndokter>`_)
+
+**1.2.1** (2023-04-05)
+
+- Bug/duplicate index BELGIUM_MAXIMUM_DEMAND_13_MONTHS (`PR #129 <https://github.com/ndokter/dsmr_parser/pull/129>`_ by `ejpalacios <https://github.com/ejpalacios>`_)
+
+**1.2.0** (2023-02-18)
+
+- Improved gas meter (mbus devices) support and replaced Telegram dictionary with backwards compatible object (`PR #121 <https://github.com/ndokter/dsmr_parser/pull/121>`_ by `ndokter <https://github.com/ndokter>`_)
+- Fix parsing with invalid timestamps (`PR #125 <https://github.com/ndokter/dsmr_parser/pull/125>`_ by `dupondje <https://github.com/dupondje>`_)
+- Add Iskra IE.x meters specification (`PR #126 <https://github.com/ndokter/dsmr_parser/pull/126>`_ by `jchevalier7 <https://github.com/jchevalier7>`_)
+
+**1.1.0** (2023-02-08)
+
+- Add instantaneous reactive power + fixed swapped reactive total import export (`PR #124 <https://github.com/ndokter/dsmr_parser/pull/124>`_ by `yada75 <https://github.com/yada75>`_)
+
+**1.0.0** (2022-12-22)
+
+- switched to new numbering scheme https://semver.org/
+- Added support for Python 3.11 and dropped support for Python 3.6 (`PR #112 <https://github.com/ndokter/dsmr_parser/pull/112>`_ by `dennissiemensma <https://github.com/dennissiemensma>`_)
+- Add support for Fluvius V1.7.1 DSMR messages (`PR #110 <https://github.com/ndokter/dsmr_parser/pull/113>`_ by `dupondje <https://github.com/dupondje>`_)
+
+**0.34** (2022-10-19)
+
+- Adds support for the Sagemcom T210-D-r smart meter (`PR #110 <https://github.com/ndokter/dsmr_parser/pull/110>`_).
+
+**0.33** (2022-04-20)
+
+- Test Python 3.10 in CI + legacy badge fix (`PR #105 <https://github.com/ndokter/dsmr_parser/pull/105>`_).
+- Update telegram_specifications.py (`PR #106 <https://github.com/ndokter/dsmr_parser/pull/106>`_).
+- Improve compatiblity with Belgian standard (`PR #107 <https://github.com/ndokter/dsmr_parser/pull/107>`_).
+- Improve documentation asyncio (`PR #63 <https://github.com/ndokter/dsmr_parser/pull/63>`_).
+
 **0.32** (2022-01-04)
 
-- Support DSMR data read via RFXtrx with integrated P1 reader (`pull request #98 <https://github.com/ndokter/dsmr_parser/pull/98>`_).
+- Support DSMR data read via RFXtrx with integrated P1 reader (`PR #98 <https://github.com/ndokter/dsmr_parser/pull/98>`_).
 
 **0.31** (2021-11-21)
 
-- Support for (German) EasyMeter Q3D using COM-1 Ethernet Gateway (`pull request #92 <https://github.com/ndokter/dsmr_parser/pull/92>`_).
+- Support for (German) EasyMeter Q3D using COM-1 Ethernet Gateway (`PR #92 <https://github.com/ndokter/dsmr_parser/pull/92>`_).
 
 **0.30** (2021-08-18)
 
-- Add support for Swedish smart meters (`pull request #86 <https://github.com/ndokter/dsmr_parser/pull/86>`_).
+- Add support for Swedish smart meters (`PR #86 <https://github.com/ndokter/dsmr_parser/pull/86>`_).
 
 **0.29** (2021-04-18)
 
-- Add value and unit properties to ProfileGenericObject to make sure that code like iterators that rely on that do not break (`pull request #71 <https://github.com/ndokter/dsmr_parser/pull/71>`_).
-Remove deprecated asyncio coroutine decorator (`pull request #76 <https://github.com/ndokter/dsmr_parser/pull/76>`_).
+- Add value and unit properties to ProfileGenericObject to make sure that code like iterators that rely on that do not break (`PR #71 <https://github.com/ndokter/dsmr_parser/pull/71>`_).
+Remove deprecated asyncio coroutine decorator (`PR #76 <https://github.com/ndokter/dsmr_parser/pull/76>`_).
 
 **0.28** (2021-02-21)
 
-- Optional keep alive monitoring for TCP/IP connections (`pull request #73 <https://github.com/ndokter/dsmr_parser/pull/73>`_).
-- Catch parse errors in TelegramParser, ignore lines that can not be parsed (`pull request #74 <https://github.com/ndokter/dsmr_parser/pull/74>`_).
+- Optional keep alive monitoring for TCP/IP connections (`PR #73 <https://github.com/ndokter/dsmr_parser/pull/73>`_).
+- Catch parse errors in TelegramParser, ignore lines that can not be parsed (`PR #74 <https://github.com/ndokter/dsmr_parser/pull/74>`_).
 
 **0.27** (2020-12-24)
 
-- fix for empty parentheses in ProfileGenericParser (redone) (`pull request #69 <https://github.com/ndokter/dsmr_parser/pull/69>`_).
+- fix for empty parentheses in ProfileGenericParser (redone) (`PR #69 <https://github.com/ndokter/dsmr_parser/pull/69>`_).
 
 **0.26** (2020-12-15)
 
-- reverted fix for empty parentheses in ProfileGenericParser (`pull request #68 <https://github.com/ndokter/dsmr_parser/pull/68>`_).
+- reverted fix for empty parentheses in ProfileGenericParser (`PR #68 <https://github.com/ndokter/dsmr_parser/pull/68>`_).
 
 **0.25** (2020-12-14)
 
-- fix for empty parentheses in ProfileGenericParser (`pull request #57 <https://github.com/ndokter/dsmr_parser/pull/57>`_).
+- fix for empty parentheses in ProfileGenericParser (`PR #57 <https://github.com/ndokter/dsmr_parser/pull/57>`_).
 
 **0.24** (2020-11-27)
 
-- Add Luxembourg equipment identifier (`pull request #62 <https://github.com/ndokter/dsmr_parser/pull/62>`_).
+- Add Luxembourg equipment identifier (`PR #62 <https://github.com/ndokter/dsmr_parser/pull/62>`_).
 
 **0.23** (2020-11-07)
 
-- Resolved issue with x-x:24.3.0 where it contains non-integer character (`pull request #61 <https://github.com/ndokter/dsmr_parser/pull/61>`_).
-- Tests are not installed anymore (`pull request #59 <https://github.com/ndokter/dsmr_parser/pull/59>`_).
-- Example telegram improvement (`pull request #58 <https://github.com/ndokter/dsmr_parser/pull/58>`_).
+- Resolved issue with x-x:24.3.0 where it contains non-integer character (`PR #61 <https://github.com/ndokter/dsmr_parser/pull/61>`_).
+- Tests are not installed anymore (`PR #59 <https://github.com/ndokter/dsmr_parser/pull/59>`_).
+- Example telegram improvement (`PR #58 <https://github.com/ndokter/dsmr_parser/pull/58>`_).
 
 **0.22** (2020-08-23)
 
@@ -71,40 +193,40 @@ Remove deprecated asyncio coroutine decorator (`pull request #76 <https://github
 
 **0.18** (2020-01-28)
 
-- PyCRC replacement (`pull request #48 <https://github.com/ndokter/dsmr_parser/pull/48>`_).
+- PyCRC replacement (`PR #48 <https://github.com/ndokter/dsmr_parser/pull/48>`_).
 
 **0.17** (2019-12-21)
 
-- Add a true telegram object (`pull request #40 <https://github.com/ndokter/dsmr_parser/pull/40>`_).
+- Add a true telegram object (`PR #40 <https://github.com/ndokter/dsmr_parser/pull/40>`_).
 
 **0.16** (2019-12-21)
 
-- Add support for Belgian and Smarty meters (`pull request #44 <https://github.com/ndokter/dsmr_parser/pull/44>`_).
+- Add support for Belgian and Smarty meters (`PR #44 <https://github.com/ndokter/dsmr_parser/pull/44>`_).
 
 **0.15** (2019-12-12)
 
-- Fixed asyncio loop issue (`pull request #43 <https://github.com/ndokter/dsmr_parser/pull/43>`_).
+- Fixed asyncio loop issue (`PR #43 <https://github.com/ndokter/dsmr_parser/pull/43>`_).
 
 **0.14** (2019-10-08)
 
-- Changed serial reading to reduce CPU usage (`pull request #37 <https://github.com/ndokter/dsmr_parser/pull/37>`_).
+- Changed serial reading to reduce CPU usage (`PR #37 <https://github.com/ndokter/dsmr_parser/pull/37>`_).
 
 **0.13** (2019-03-04)
 
-- Fix DSMR v5.0 serial settings which were not used (`pull request #33 <https://github.com/ndokter/dsmr_parser/pull/33>`_).
+- Fix DSMR v5.0 serial settings which were not used (`PR #33 <https://github.com/ndokter/dsmr_parser/pull/33>`_).
 
 **0.12** (2018-09-23)
 
-- Add serial settings for DSMR v5.0 (`pull request #31 <https://github.com/ndokter/dsmr_parser/pull/31>`_).
-- Lux-creos-obis-1.8.0 (`pull request #32 <https://github.com/ndokter/dsmr_parser/pull/32>`_). 
+- Add serial settings for DSMR v5.0 (`PR #31 <https://github.com/ndokter/dsmr_parser/pull/31>`_).
+- Lux-creos-obis-1.8.0 (`PR #32 <https://github.com/ndokter/dsmr_parser/pull/32>`_). 
 
 **0.11** (2017-09-18)
 
-- NULL value fix in checksum (`pull request #26 <https://github.com/ndokter/dsmr_parser/pull/26>`_)
+- NULL value fix in checksum (`PR #26 <https://github.com/ndokter/dsmr_parser/pull/26>`_)
 
 **0.10** (2017-06-05)
 
-- bugfix: don't force full telegram signatures (`pull request #25 <https://github.com/ndokter/dsmr_parser/pull/25>`_)
+- bugfix: don't force full telegram signatures (`PR #25 <https://github.com/ndokter/dsmr_parser/pull/25>`_)
 - removed unused code for automatic telegram detection as this needs reworking after the fix mentioned above
 - InvalidChecksumError's are logged as warning instead of error
 
@@ -124,7 +246,7 @@ Remove deprecated asyncio coroutine decorator (`pull request #76 <https://github
 
 **0.7** (2017-01-14)
 
-- Internal refactoring related to the way clients feed their data into the parse module. Clients can now supply the telegram data in single characters, lines (which was common) or complete telegram strings. (`pull request #17 <https://github.com/ndokter/dsmr_parser/pull/17>`_)
+- Internal refactoring related to the way clients feed their data into the parse module. Clients can now supply the telegram data in single characters, lines (which was common) or complete telegram strings. (`PR #17 <https://github.com/ndokter/dsmr_parser/pull/17>`_)
 
 **IMPORTANT: this release has the following backwards incompatible changes:**
 
@@ -134,8 +256,8 @@ Remove deprecated asyncio coroutine decorator (`pull request #76 <https://github
 
 **0.6** (2017-01-04)
 
-- Fixed bug in CRC checksum verification for the asyncio client (`pull request #15 <https://github.com/ndokter/dsmr_parser/pull/15>`_)
-- Support added for TCP connections using the asyncio client (`pull request #12 <https://github.com/ndokter/dsmr_parser/pull/12/>`_)
+- Fixed bug in CRC checksum verification for the asyncio client (`PR #15 <https://github.com/ndokter/dsmr_parser/pull/15>`_)
+- Support added for TCP connections using the asyncio client (`PR #12 <https://github.com/ndokter/dsmr_parser/pull/12/>`_)
 
 **0.5** (2016-12-29)
 
@@ -143,16 +265,16 @@ Remove deprecated asyncio coroutine decorator (`pull request #76 <https://github
 
 **0.4** (2016-11-21)
 
-- DSMR v2.2 serial settings now uses parity serial.EVEN by default (`pull request #5 <https://github.com/ndokter/dsmr_parser/pull/5>`_)
-- improved asyncio reader and improve it's error handling (`pull request #8 <https://github.com/ndokter/dsmr_parser/pull/8>`_)
+- DSMR v2.2 serial settings now uses parity serial.EVEN by default (`PR #5 <https://github.com/ndokter/dsmr_parser/pull/5>`_)
+- improved asyncio reader and improve it's error handling (`PR #8 <https://github.com/ndokter/dsmr_parser/pull/8>`_)
 
 **0.3** (2016-11-12)
 
-- asyncio reader for non-blocking reads (`pull request #3 <https://github.com/ndokter/dsmr_parser/pull/3>`_)
+- asyncio reader for non-blocking reads (`PR #3 <https://github.com/ndokter/dsmr_parser/pull/3>`_)
 
 **0.2** (2016-11-08)
 
-- support for DMSR version 2.2 (`pull request #2 <https://github.com/ndokter/dsmr_parser/pull/2>`_)
+- support for DMSR version 2.2 (`PR #2 <https://github.com/ndokter/dsmr_parser/pull/2>`_)
 
 **0.1** (2016-08-22)
 

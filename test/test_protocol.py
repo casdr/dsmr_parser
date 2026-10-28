@@ -1,10 +1,14 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import unittest
 
 from dsmr_parser import obis_references as obis
-from dsmr_parser.clients.protocol import create_dsmr_protocol
-
+from dsmr_parser.clients import protocol as protocol_module
+from dsmr_parser.clients.protocol import (
+    create_dsmr_protocol,
+    create_tcp_dsmr_reader,
+)
+from dsmr_parser.objects import Telegram
 
 TELEGRAM_V2_2 = (
     '/ISk5\2MT382-1004\r\n'
@@ -44,7 +48,7 @@ class ProtocolTest(unittest.TestCase):
         self.protocol.data_received(TELEGRAM_V2_2.encode('ascii'))
 
         telegram = self.protocol.telegram_callback.call_args_list[0][0][0]
-        assert isinstance(telegram, dict)
+        assert isinstance(telegram, Telegram)
 
         assert float(telegram[obis.CURRENT_ELECTRICITY_USAGE].value) == 1.01
         assert telegram[obis.CURRENT_ELECTRICITY_USAGE].unit == 'kW'
@@ -68,6 +72,26 @@ class ProtocolTest(unittest.TestCase):
 
         # 2nd call of keep_alive should close the transport
         self.protocol.keep_alive()
-        assert mock_transport.close.called_once()
+        mock_transport.close.assert_called_once()
 
         self.protocol.connection_lost(None)
+
+
+class CreateTcpDsmrReaderTest(unittest.TestCase):
+
+    def test_delegates_to_create_dsmr_reader(self):
+        """It builds a socket:// URL and forwards every argument; the
+        watchdog itself is covered by ProtocolTest.test_receive_packet."""
+        conn = Mock()
+        with patch.object(protocol_module, 'create_serial_connection', conn):
+            create_tcp_dsmr_reader('host.example', 1234, '2.2',
+                                   telegram_callback=Mock(), loop=Mock(),
+                                   keep_alive_interval=1,
+                                   encryption_key='abc',
+                                   authentication_key='def')
+
+        assert conn.call_args.kwargs['url'] == 'socket://host.example:1234'
+        protocol = conn.call_args[0][1]()
+        assert protocol._keep_alive_interval == 1
+        assert protocol._encryption_key == 'abc'
+        assert protocol._authentication_key == 'def'
